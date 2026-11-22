@@ -250,6 +250,13 @@ function stageShot(shot) {
       byKey['bintang:serang:'],
     ].filter(Boolean);
     state.player.hand = wanted.length === 5 ? wanted : hand;
+    // Resonansi AKTIF di frame ini: dua kartu Api sudah dimainkan giliran
+    // ini (diambil dari deck, bukan dari tangan yang terlihat).
+    const handUids = new Set(state.player.hand.map((c) => c.uid));
+    const apiPlayed = state.player.deck
+      .filter((c) => c.element === 'api' && !handUids.has(c.uid))
+      .slice(0, 2);
+    if (apiPlayed.length === 2) state.player.playedThisTurn = apiPlayed;
     // Kartu terakhir Raka: serangan Api yang besar.
     const bigApi = state.foe.deck.find((c) => c.kind === 'serang' && c.element === 'api' && c.value >= 6)
       ?? state.foe.hand.find((c) => c.kind === 'serang');
@@ -259,7 +266,7 @@ function stageShot(shot) {
     state.log = [
       'Giliran 5: Ledakan Api Raka — 6 damage!',
       'Kamu: Perisai Lumut +3.',
-      'Resonansi Daun menyala (+2).',
+      'Kamu memainkan 2 kartu Api — Resonansi Api menyala (+2)!',
       'Raka menyiapkan Serangan Api!',
     ];
     showIntent(

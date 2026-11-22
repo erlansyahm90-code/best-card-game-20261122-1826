@@ -79,6 +79,16 @@ function hpBarHtml(hp, maxHp) {
   return `<div class="hpbar${low}"><div class="hpfill" style="width:${pct}%"></div><span class="hptext">${hp} / ${maxHp}</span></div>`;
 }
 
+// Resonansi aktif: dua kartu terakhir giliran ini selemen. Mengembalikan id
+// elemennya, atau null bila belum menyala.
+function activeResonance(fighter) {
+  const t = fighter.playedThisTurn;
+  if (t.length < 2) return null;
+  const a = t[t.length - 1];
+  const b = t[t.length - 2];
+  return a.element === b.element ? a.element : null;
+}
+
 // ---- Render meja dari state ---------------------------------------------
 
 export function renderTable(state) {
@@ -128,12 +138,33 @@ export function renderTable(state) {
     .map((line) => `<li>${line}</li>`)
     .join('');
 
-  // Indikator Resonansi aktif + Ganda Angin.
-  $('resonance').textContent = p.doubleNext
-    ? '✦ GANDA ANGIN AKTIF — serangan berikut ×2'
-    : p.playedThisTurn.length > 0
-      ? `Resonansi: ${elementName(p.playedThisTurn[p.playedThisTurn.length - 1].element)} — kartu selemen +2`
-      : 'Resonansi: mainkan 2 kartu selemen dalam satu giliran (+2)';
+  // Indikator Resonansi aktif + Ganda Angin. Saat dua kartu selemen sudah
+  // dimainkan giliran ini, baris menampilkan status MENYALA dan seluruh
+  // meja glow warna elemen itu selama resonansi aktif.
+  const resRow = $('resonance');
+  const resEl = activeResonance(p);
+  const stage = document.getElementById('stage');
+  if (p.doubleNext) {
+    resRow.textContent = '✦ GANDA ANGIN AKTIF — serangan berikut ×2';
+    resRow.classList.remove('active');
+    stage.classList.remove('resonance-on');
+  } else if (resEl) {
+    resRow.textContent =
+      `Resonansi: ${elementName(resEl)} MENYALA (+2) — kartu ${elementName(resEl)} berikutnya +2`;
+    resRow.classList.add('active');
+    stage.classList.add('resonance-on');
+    stage.style.setProperty('--res-glow', ELEMENTS[resEl].glow);
+    stage.style.setProperty('--res-color', ELEMENTS[resEl].color);
+  } else if (p.playedThisTurn.length > 0) {
+    resRow.textContent =
+      `Resonansi: ${elementName(p.playedThisTurn[p.playedThisTurn.length - 1].element)} — kartu selemen +2`;
+    resRow.classList.remove('active');
+    stage.classList.remove('resonance-on');
+  } else {
+    resRow.textContent = 'Resonansi: mainkan 2 kartu selemen dalam satu giliran (+2)';
+    resRow.classList.remove('active');
+    stage.classList.remove('resonance-on');
+  }
 }
 
 // ---- Banner niat Raka ----------------------------------------------------
