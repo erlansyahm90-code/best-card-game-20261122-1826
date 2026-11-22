@@ -7,7 +7,7 @@
 import { GAME } from './config.js';
 import { buildDeck, drawCards, makeRng, shuffle } from './deck.js';
 import { checkWinner, playCard, startTurn } from './rules.js';
-import { chooseMode, counterHint, intentText, planTurn } from './ai.js';
+import { chooseMode, counterHint, intentText, MODES, planTurn } from './ai.js';
 import {
   floatText,
   hideIntent,
@@ -56,8 +56,10 @@ function newGame() {
     busy: false,
   };
   state.foe.mode = chooseMode(state);
-  drawCards(state.player.deck, state.player.hand, GAME.handSize);
-  drawCards(state.foe.deck, state.foe.hand, GAME.handSize);
+  // Tangan awal 4 kartu; startTurn di bawah menarik 1 lagi, jadi giliran
+  // pertama dimulai dengan 5 kartu di tangan, sesuai aturan.
+  drawCards(state.player.deck, state.player.hand, GAME.handSize - 1);
+  drawCards(state.foe.deck, state.foe.hand, GAME.handSize - 1);
   startTurn(state, 'player');
   return state;
 }
@@ -232,6 +234,8 @@ function stageShot(shot) {
     state.foe.mode = chooseMode(state);
     state.player.lastElement = 'api';
     state.foe.lastElement = 'daun';
+    // Tangan lawan penuh: 5 punggung kartu di atas meja.
+    drawCards(state.foe.deck, state.foe.hand, 1);
     // Tangan pemain: 5 kartu yang menampilkan semua jenis + elemen.
     const hand = state.player.hand;
     const byKey = {};
@@ -250,12 +254,13 @@ function stageShot(shot) {
     const bigApi = state.foe.deck.find((c) => c.kind === 'serang' && c.element === 'api' && c.value >= 6)
       ?? state.foe.hand.find((c) => c.kind === 'serang');
     if (bigApi) state.foe.played = [bigApi];
+    // Mode dipaksa Agresif supaya badge mode cocok dengan banner niat.
+    state.foe.mode = MODES.agresif;
     state.log = [
-      'Giliran 5: Raka memainkan Ledakan Api — 6 damage!',
-      'Kamu memasang Perisai Lumut — perisai +3.',
-      'Resonansi menyala: dua kartu Daun dalam satu giliran (+2).',
-      'Raka menyiapkan Serangan Api! Siapkan perisai atau elemen penangkal.',
-      'Giliran 6 · GILIRANMU — mainkan kartu lalu akhiri giliran',
+      'Giliran 5: Ledakan Api Raka — 6 damage!',
+      'Kamu: Perisai Lumut +3.',
+      'Resonansi Daun menyala (+2).',
+      'Raka menyiapkan Serangan Api!',
     ];
     showIntent(
       'Raka menyiapkan Serangan Api! — Api mengungguli Daun. Siapkan perisai atau elemen penangkal.',

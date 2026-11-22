@@ -50,16 +50,16 @@ html, body {
 #table { position: absolute; inset: 0; transition: filter 0.3s; }
 #table.dimmed-table { filter: brightness(0.35) blur(2px); }
 
-.zone { position: absolute; left: 0; right: 0; display: flex; align-items: flex-start; gap: 16px; padding: 12px 20px; }
+.zone { position: absolute; left: 0; right: 0; display: flex; align-items: flex-start; gap: 16px; padding: 10px 20px; }
 #foe-zone { top: 0; }
 #player-zone { bottom: 0; align-items: flex-end; }
 
 .fighter { display: flex; flex-direction: column; gap: 6px; width: 300px; }
 .fighter .name-row { display: flex; align-items: center; gap: 10px; }
 .avatar {
-  width: 52px; height: 52px; border-radius: 50%;
+  width: 46px; height: 46px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 26px; font-weight: 800; color: #fff;
+  font-size: 23px; font-weight: 800; color: #fff;
   background: radial-gradient(circle at 35% 30%, #ff9a5c, #c22e1e 70%);
   border: 3px solid #ffd76d;
   box-shadow: 0 0 18px rgba(255, 122, 77, 0.55);
@@ -78,7 +78,7 @@ html, body {
 }
 
 .hpbar {
-  position: relative; height: 26px; border-radius: 6px;
+  position: relative; height: 22px; border-radius: 6px;
   background: #10131f; border: 2px solid #4a4f7d; overflow: hidden;
 }
 .hpfill {
@@ -92,9 +92,9 @@ html, body {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   font-size: 15px; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000;
 }
-.shield-tag { font-size: 15px; font-weight: 800; color: #9fd0ff; min-height: 20px; }
-.ember-row { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #ffd76d; }
-.pip { font-size: 15px; color: #3a3f6b; }
+.shield-tag { font-size: 14px; font-weight: 800; color: #9fd0ff; min-height: 17px; }
+.ember-row { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 700; color: #ffd76d; white-space: nowrap; }
+.pip { font-size: 13px; color: #3a3f6b; }
 .pip.on { color: #ffb13d; text-shadow: 0 0 8px #ff9a2e; }
 .pip.locked { opacity: 0.25; }
 .deck-tag { font-size: 13px; color: #c9c2a8; }
@@ -105,7 +105,7 @@ html, body {
 
 /* Area tengah: kartu lawan + banner niat + legenda roda. */
 #mid-row {
-  position: absolute; top: 150px; left: 20px; right: 20px;
+  position: absolute; top: 162px; left: 20px; right: 20px;
   display: flex; gap: 18px; align-items: flex-start;
 }
 #foe-played { width: 190px; flex: 0 0 auto; text-align: center; }
@@ -186,27 +186,28 @@ html, body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 .card-icon {
-  position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
-  width: 64px; height: 64px; border-radius: 50%;
+  position: absolute; top: 22px; left: 50%; transform: translateX(-50%);
+  width: 58px; height: 58px; border-radius: 50%;
   background: var(--el, #888); color: #fff;
   display: flex; align-items: center; justify-content: center;
   box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.3), 0 0 14px var(--elg, #fff);
 }
 .card-name {
-  position: absolute; top: 100px; left: 8px; right: 8px; text-align: center;
-  font-size: 15px; font-weight: 800; line-height: 1.15;
+  position: absolute; top: 88px; left: 8px; right: 8px; text-align: center;
+  font-size: 13px; font-weight: 800; line-height: 1.15; white-space: nowrap;
 }
 .card-kind {
-  position: absolute; top: 124px; left: 8px; right: 8px; text-align: center;
-  font-size: 10px; font-weight: 800; letter-spacing: 1.5px; color: var(--eld, #555);
+  position: absolute; top: 110px; left: 8px; right: 8px; text-align: center;
+  font-size: 9.5px; font-weight: 800; letter-spacing: 1px; color: var(--eld, #555);
+  white-space: nowrap;
 }
 .card-value {
-  position: absolute; bottom: 26px; left: 0; right: 0; text-align: center;
-  font-size: 30px; font-weight: 900; color: var(--eld, #333);
+  position: absolute; top: 128px; left: 0; right: 0; text-align: center;
+  font-size: 28px; font-weight: 900; color: var(--eld, #333);
 }
 .card-effect {
   position: absolute; bottom: 6px; left: 8px; right: 8px; text-align: center;
-  font-size: 11px; line-height: 1.25; color: #5a4c33;
+  font-size: 10.5px; line-height: 1.25; color: #5a4c33; white-space: nowrap;
 }
 .card-key {
   position: absolute; bottom: -9px; right: -7px;

@@ -12,17 +12,17 @@ export const MODES = {
   agresif: {
     id: 'agresif',
     name: 'Agresif',
-    tagline: 'menyerang tanpa ampun',
+    tagline: 'menyerang',
   },
   bertahan: {
     id: 'bertahan',
     name: 'Bertahan',
-    tagline: 'berlindung di balik perisai',
+    tagline: 'bertahan',
   },
   perangkai: {
     id: 'perangkai',
     name: 'Perangkai',
-    tagline: 'merangkai kombo elemen',
+    tagline: 'merangkai kombo',
   },
 };
 
@@ -47,8 +47,8 @@ export function chooseMode(state) {
 }
 
 // Skor satu kartu di tangan Raka, menurut mode yang sedang aktif.
-// Skor tinggi = lebih dulu dimainkan.
-function scoreCard(state, card, mode) {
+// playedSim = kartu yang sudah direncanakan giliran ini (untuk Resonansi).
+function scoreCard(state, card, mode, playedSim = []) {
   const foe = state.foe;
   let score = card.value;
   if (card.kind === 'serang') {
@@ -72,8 +72,8 @@ function scoreCard(state, card, mode) {
     }
     if (mode.id === 'perangkai') score += 1;
   }
-  // Resonansi: kartu selemen dengan yang sudah dimainkan giliran ini naik.
-  score += resonanceBonus(card, foe.playedThisTurn);
+  // Resonansi: kartu selemen dengan yang sudah direncanakan giliran ini naik.
+  score += resonanceBonus(card, playedSim);
   // Kartu murah lebih luwes dimainkan berurutan.
   score -= card.cost * 0.4;
   return score;
@@ -101,7 +101,7 @@ export function planTurn(state, mode) {
     }
     if (!pick || (mode.id !== 'perangkai' && playedSim.length === 0)) {
       pick = affordable.reduce((best, c) =>
-        scoreCard(state, c, mode) > scoreCard(state, best, mode) ? c : best,
+        scoreCard(state, c, mode, playedSim) > scoreCard(state, best, mode, playedSim) ? c : best,
       );
     }
     // Raka berhenti setelah 3 kartu — gilirannya tetap cepat dan terbaca.

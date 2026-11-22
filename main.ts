@@ -25,7 +25,8 @@ if (existsSync(join(here, 'screenshots'))) {
 // The scorer's own caps (reference/gate.json): only text_max_bytes shapes the
 // bytes; the rest refuse an entry the scorer would refuse — more than 4
 // screenshots or one over 256 KiB; more than 993 files in game/ or 48 MiB of
-// game files in all, or a path under game/ over 1000 bytes.
+// game files in all, or a path under game/ over 1000 bytes. Our game stays
+// far under every cap: 10 source files, 4 screenshots, no assets at all.
 writeFileSync(
   join(out, 'dossier.json'),
   buildDossier(out, {
