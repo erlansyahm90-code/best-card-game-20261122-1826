@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Four Winds Duel — Duel Empat Angin</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div id="table">
+      <!-- Lawan -->
+      <div class="zone" id="foe-zone">
+        <div class="fighter">
+          <div class="name-row">
+            <div class="avatar">🌪️</div>
+            <div>
+              <h2 id="foe-name">Raka, Penjaga Angin</h2>
+              <span class="mode-badge" id="foe-mode">Mode: Agresif</span>
+            </div>
+          </div>
+          <div id="foe-hp"></div>
+          <div class="shield-tag" id="foe-shield"></div>
+          <div class="ember-row">🔥 Ember <span id="foe-ember"></span></div>
+          <div class="deck-tag" id="foe-deck">Deck 25</div>
+        </div>
+        <div id="foe-hand"></div>
+      </div>
+
+      <!-- Tengah: kartu lawan, banner niat, panel samping -->
+      <div id="mid-row">
+        <div id="foe-played"></div>
+        <div id="intent-wrap">
+          <div id="intent-banner">
+            <div class="intent-kicker">NIAT RAKA</div>
+            <div class="intent-text"></div>
+          </div>
+          <div id="intent-hint"></div>
+          <div id="turn-badge">Giliran 1 · GILIRANMU</div>
+          <div id="resonance">Resonansi: mainkan 2 kartu selemen dalam satu giliran (+2)</div>
+        </div>
+        <div id="side-panel">
+          <div id="wheel">
+            <h3>RODA ELEMEN</h3>
+            <div class="wheel-row"><span class="icon" style="color:#e2483a">🔥</span> Api <span class="beats">› Daun</span></div>
+            <div class="wheel-row"><span class="icon" style="color:#2fae5f">🍃</span> Daun <span class="beats">› Air</span></div>
+            <div class="wheel-row"><span class="icon" style="color:#2f7fe0">💧</span> Air <span class="beats">› Api</span></div>
+            <div class="wheel-row"><span class="icon" style="color:#e0a92f">⭐</span> Bintang <span class="beats">netral</span></div>
+            <div class="note">Unggul elemen: +2 damage terhadap elemen terakhir yang dimainkan lawan.</div>
+          </div>
+          <div id="log">
+            <h3>RIWAYAT GILIRAN</h3>
+            <ul id="log-list"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pemain -->
+      <div class="zone" id="player-zone">
+        <div class="fighter">
+          <div class="name-row">
+            <div class="avatar you">🧑</div>
+            <div>
+              <h2>Kamu, Penantang Angin</h2>
+              <span class="mode-badge" style="background:#9fd0ff">Tangan 5 kartu</span>
+            </div>
+          </div>
+          <div id="player-hp"></div>
+          <div class="shield-tag" id="player-shield"></div>
+          <div class="ember-row">🔥 Ember <span id="player-ember"></span></div>
+          <div class="deck-tag" id="player-deck">Deck 25</div>
+        </div>
+        <div id="player-hand"></div>
+        <div id="controls">
+          <button id="end-turn" type="button">Akhiri Giliran ⏎</button>
+          <button id="mute-btn" type="button">🔊 Suara (M)</button>
+          <div class="keys-hint">1–5 mainkan kartu · Space akhiri giliran<br>R mulai lagi · M bisu</div>
+        </div>
+      </div>
+
+      <div id="resonance-flash"></div>
+      <div id="float-layer"></div>
+    </div>
+
+    <!-- Layar judul -->
+    <div class="screen" id="screen-title">
+      <div class="game-logo">FOUR<br><span class="wind">WINDS</span> DUEL</div>
+      <div class="game-tagline">Duel Empat Angin — kartu, ember, dan satu Penjaga Angin yang bisa dibaca niatnya.</div>
+      <div class="wind-row">
+        <div class="wind-chip"><span class="chip-icon" style="background:#e2483a">🔥</span>Api</div>
+        <div class="wind-chip"><span class="chip-icon" style="background:#2f7fe0">💧</span>Air</div>
+        <div class="wind-chip"><span class="chip-icon" style="background:#2fae5f">🍃</span>Daun</div>
+        <div class="wind-chip"><span class="chip-icon" style="background:#e0a92f">⭐</span>Bintang</div>
+      </div>
+      <button class="big-btn" type="button" data-action="start">▶ &nbsp;MAIN</button>
+      <div class="howto">
+        <b>Cara main:</b> HP 30 vs 30. Tiap giliran embermu naik 1 (maks 10) dan kamu menarik 1 kartu.
+        Klik kartu untuk memainkannya — Serang memberi damage, Perisai menyerap damage, Trik memberi efek.
+        <div class="wheel-line"><b>Roda elemen:</b> 🔥 Api › 🍃 Daun › 💧 Air › 🔥 Api · ⭐ Bintang netral. Unggul elemen +2 damage.</div>
+        <div class="wheel-line"><b>Resonansi:</b> mainkan 2 kartu selemen dalam satu giliran untuk bonus +2.</div>
+        <div class="wheel-line"><b>Baca Raka:</b> sebelum bertindak ia mengumumkan niatnya — Agresif, Bertahan, atau Perangkai — dan bannernya memberitahu penangkalnya.</div>
+      </div>
+      <div class="foe-intro">Lawanmu: <b>Raka, Penjaga Angin</b> — ia mengganti mode setiap giliran. Jangan biarkan ia merangkai kombo.</div>
+    </div>
+
+    <!-- Layar menang -->
+    <div class="screen hidden" id="screen-win">
+      <div class="ember-rain"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="end-title gold">MENANG!</div>
+      <div class="end-sub">Angin keempat tunduk padamu. Raka menunduk hormat — Penjaga Angin mengakui Penantang baru sebagai penguasa meja.</div>
+      <div class="stats-row" id="win-stats"></div>
+      <button class="big-btn" type="button" data-action="restart">↻ &nbsp;MAIN LAGI (R)</button>
+    </div>
+
+    <!-- Layar kalah -->
+    <div class="screen hidden" id="screen-loss">
+      <div class="end-title red">KALAH</div>
+      <div class="end-sub">Raka menyapu kartumu dengan satu hembusan terakhir. Angin masih miliknya — untuk sekarang. Pelajari niatnya, lalu tantang lagi.</div>
+      <div class="stats-row" id="loss-stats"></div>
+      <button class="big-btn" type="button" data-action="restart">↻ &nbsp;MAIN LAGI (R)</button>
+    </div>
+
+    <p id="status" role="status" aria-live="polite"></p>
+  </div>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

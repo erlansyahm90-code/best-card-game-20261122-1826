@@ -1,0 +1,367 @@
+/* Four Winds Duel — style.css
+   Meja duel malam berangin: langit indigo gelap, aksen emas, kartu perkamen.
+   Stage tetap 1280×720 dan diskalakan ke jendela lewat transform di index.html,
+   supaya screenshot selalu berukuran sama. */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: #0b0e1e;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #f2ead8;
+}
+
+#viewport {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(1200px 500px at 50% -10%, #2a2f5e 0%, transparent 60%),
+    radial-gradient(900px 600px at 85% 110%, #123524 0%, transparent 55%),
+    #0b0e1e;
+}
+
+#stage {
+  position: relative;
+  width: 1280px;
+  height: 720px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px #3a3f6b, 0 24px 80px rgba(0, 0, 0, 0.6);
+  background:
+    radial-gradient(ellipse 700px 320px at 50% 46%, #1d5c46 0%, #123f31 55%, #0d2f25 100%);
+}
+
+#stage.shake { animation: shake 0.35s ease-in-out; }
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-7px, 3px); }
+  40% { transform: translate(6px, -4px); }
+  60% { transform: translate(-5px, -2px); }
+  80% { transform: translate(4px, 2px); }
+}
+
+/* ---- Meja ---- */
+#table { position: absolute; inset: 0; transition: filter 0.3s; }
+#table.dimmed-table { filter: brightness(0.35) blur(2px); }
+
+.zone { position: absolute; left: 0; right: 0; display: flex; align-items: flex-start; gap: 16px; padding: 12px 20px; }
+#foe-zone { top: 0; }
+#player-zone { bottom: 0; align-items: flex-end; }
+
+.fighter { display: flex; flex-direction: column; gap: 6px; width: 300px; }
+.fighter .name-row { display: flex; align-items: center; gap: 10px; }
+.avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 800; color: #fff;
+  background: radial-gradient(circle at 35% 30%, #ff9a5c, #c22e1e 70%);
+  border: 3px solid #ffd76d;
+  box-shadow: 0 0 18px rgba(255, 122, 77, 0.55);
+  flex: 0 0 auto;
+}
+.avatar.you {
+  background: radial-gradient(circle at 35% 30%, #6db3ff, #1d4fa0 70%);
+  border-color: #9fd0ff;
+  box-shadow: 0 0 18px rgba(109, 179, 255, 0.5);
+}
+.fighter h2 { font-size: 19px; line-height: 1.15; color: #fff; letter-spacing: 0.3px; }
+.mode-badge {
+  display: inline-block; margin-top: 2px; padding: 2px 8px;
+  font-size: 12px; font-weight: 700; color: #1a1206;
+  background: #ffd76d; border-radius: 20px;
+}
+
+.hpbar {
+  position: relative; height: 26px; border-radius: 6px;
+  background: #10131f; border: 2px solid #4a4f7d; overflow: hidden;
+}
+.hpfill {
+  height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, #e2483a, #ff7a4d);
+  transition: width 0.45s ease;
+}
+.hpbar.low .hpfill { background: linear-gradient(90deg, #a11208, #e2483a); animation: pulse 1s infinite; }
+@keyframes pulse { 50% { filter: brightness(1.5); } }
+.hptext {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800; color: #fff; text-shadow: 0 1px 2px #000;
+}
+.shield-tag { font-size: 15px; font-weight: 800; color: #9fd0ff; min-height: 20px; }
+.ember-row { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #ffd76d; }
+.pip { font-size: 15px; color: #3a3f6b; }
+.pip.on { color: #ffb13d; text-shadow: 0 0 8px #ff9a2e; }
+.pip.locked { opacity: 0.25; }
+.deck-tag { font-size: 13px; color: #c9c2a8; }
+
+/* Tangan lawan: punggung kartu berjejer di atas. */
+#foe-hand { display: flex; gap: 6px; margin-left: 8px; }
+#foe-hand .card { transform: scale(0.62); transform-origin: top center; margin: 0 -26px; }
+
+/* Area tengah: kartu lawan + banner niat + legenda roda. */
+#mid-row {
+  position: absolute; top: 150px; left: 20px; right: 20px;
+  display: flex; gap: 18px; align-items: flex-start;
+}
+#foe-played { width: 190px; flex: 0 0 auto; text-align: center; }
+.played-label { font-size: 13px; font-weight: 700; color: #e8dfc5; margin-bottom: 6px; min-height: 18px; }
+#foe-played .card { margin: 0 auto; animation: slide-in 0.45s ease; }
+@keyframes slide-in {
+  from { transform: translateY(-26px) rotate(-6deg); opacity: 0; }
+  to { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+
+#intent-wrap { flex: 1; display: flex; flex-direction: column; gap: 8px; padding-top: 4px; }
+#intent-banner {
+  border: 2px solid #ffd76d; border-radius: 10px; padding: 10px 14px;
+  background: rgba(20, 16, 4, 0.82); box-shadow: 0 0 22px rgba(255, 215, 109, 0.25);
+  opacity: 0; transform: translateY(-6px); transition: opacity 0.3s, transform 0.3s;
+}
+#intent-banner.show { opacity: 1; transform: translateY(0); }
+.intent-kicker { font-size: 11px; font-weight: 800; letter-spacing: 2px; color: #ffd76d; }
+.intent-text { font-size: 17px; font-weight: 700; color: #fff; line-height: 1.35; margin-top: 2px; }
+#intent-hint { font-size: 13px; color: #bfe3c8; font-style: italic; min-height: 18px; }
+#turn-badge {
+  font-size: 14px; font-weight: 800; color: #fff;
+  background: rgba(11, 14, 30, 0.65); border: 1px solid #4a4f7d;
+  border-radius: 8px; padding: 7px 12px; align-self: flex-start;
+}
+#resonance {
+  font-size: 13px; font-weight: 700; color: #ffd76d;
+  background: rgba(11, 14, 30, 0.55); border-radius: 8px; padding: 6px 10px;
+  align-self: flex-start;
+}
+
+/* Log + legenda roda elemen di kanan tengah. */
+#side-panel { width: 300px; flex: 0 0 auto; display: flex; flex-direction: column; gap: 10px; }
+#wheel {
+  background: rgba(11, 14, 30, 0.72); border: 1px solid #4a4f7d; border-radius: 10px;
+  padding: 10px 12px;
+}
+#wheel h3 { font-size: 12px; letter-spacing: 1.5px; color: #ffd76d; margin-bottom: 6px; }
+#wheel .wheel-row { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #fff; padding: 2px 0; }
+#wheel .wheel-row .icon { display: inline-flex; }
+#wheel .beats { color: #c9c2a8; font-weight: 600; }
+#wheel .note { font-size: 12px; color: #c9c2a8; margin-top: 5px; line-height: 1.4; }
+#log {
+  background: rgba(11, 14, 30, 0.72); border: 1px solid #4a4f7d; border-radius: 10px;
+  padding: 10px 12px;
+}
+#log h3 { font-size: 12px; letter-spacing: 1.5px; color: #ffd76d; margin-bottom: 6px; }
+#log-list { list-style: none; font-size: 13px; line-height: 1.45; color: #e8dfc5; }
+#log-list li { padding: 2px 0; border-bottom: 1px dashed rgba(255, 255, 255, 0.08); }
+#log-list li:last-child { border-bottom: 0; color: #fff; font-weight: 700; }
+
+/* ---- Kartu ---- */
+.card {
+  position: relative;
+  width: 132px; height: 184px; border-radius: 12px;
+  background: linear-gradient(180deg, #fdf6e3 0%, #f3e6c2 100%);
+  border: 3px solid var(--eld, #555);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45), inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+  color: #241d12;
+  cursor: default;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  flex: 0 0 auto;
+}
+.card.playable { cursor: pointer; }
+.card.playable:hover {
+  transform: translateY(-18px) scale(1.05);
+  box-shadow: 0 18px 28px rgba(0, 0, 0, 0.55), 0 0 0 3px var(--elg, #fff);
+  z-index: 5;
+}
+.card.dimmed { filter: brightness(0.62) saturate(0.7); }
+.card-cost {
+  position: absolute; top: -9px; left: -9px;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe9a8, #f5a623 70%);
+  border: 2px solid #7d5a10;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px; font-weight: 900; color: #3a2a05;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+.card-icon {
+  position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--el, #888); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: inset 0 -4px 8px rgba(0, 0, 0, 0.3), 0 0 14px var(--elg, #fff);
+}
+.card-name {
+  position: absolute; top: 100px; left: 8px; right: 8px; text-align: center;
+  font-size: 15px; font-weight: 800; line-height: 1.15;
+}
+.card-kind {
+  position: absolute; top: 124px; left: 8px; right: 8px; text-align: center;
+  font-size: 10px; font-weight: 800; letter-spacing: 1.5px; color: var(--eld, #555);
+}
+.card-value {
+  position: absolute; bottom: 26px; left: 0; right: 0; text-align: center;
+  font-size: 30px; font-weight: 900; color: var(--eld, #333);
+}
+.card-effect {
+  position: absolute; bottom: 6px; left: 8px; right: 8px; text-align: center;
+  font-size: 11px; line-height: 1.25; color: #5a4c33;
+}
+.card-key {
+  position: absolute; bottom: -9px; right: -7px;
+  width: 24px; height: 24px; border-radius: 6px;
+  background: #1a1d33; color: #fff; border: 1px solid #4a4f7d;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+}
+
+/* Punggung kartu lawan. */
+.card.back {
+  background: linear-gradient(135deg, #2a2f5e, #123f31);
+  border-color: #ffd76d;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 8px;
+}
+.back-swirl { font-size: 40px; filter: drop-shadow(0 0 8px rgba(255, 215, 109, 0.6)); }
+.back-mark { font-size: 15px; font-weight: 900; letter-spacing: 2px; color: #ffd76d; }
+
+/* Tangan pemain: kartu menghadap ke atas, sedikit miring seperti kipas. */
+#player-hand { display: flex; gap: 10px; align-items: flex-end; justify-content: center; flex: 1; padding-bottom: 4px; }
+#player-hand .card { animation: deal-in 0.4s ease backwards; }
+#player-hand .card:nth-child(1) { transform: rotate(-4deg); }
+#player-hand .card:nth-child(2) { transform: rotate(-2deg); }
+#player-hand .card:nth-child(3) { transform: rotate(0deg); }
+#player-hand .card:nth-child(4) { transform: rotate(2deg); }
+#player-hand .card:nth-child(5) { transform: rotate(4deg); }
+#player-hand .card:nth-child(1) { animation-delay: 0.02s; }
+#player-hand .card:nth-child(2) { animation-delay: 0.07s; }
+#player-hand .card:nth-child(3) { animation-delay: 0.12s; }
+#player-hand .card:nth-child(4) { animation-delay: 0.17s; }
+#player-hand .card:nth-child(5) { animation-delay: 0.22s; }
+#player-hand .card.playable:hover { transform: translateY(-18px) scale(1.05) rotate(0deg); }
+@keyframes deal-in {
+  from { transform: translateY(60px) rotate(8deg); opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Tombol akhiri giliran + bisu. */
+#controls { display: flex; flex-direction: column; gap: 8px; width: 190px; }
+#end-turn {
+  padding: 13px 10px; font-size: 16px; font-weight: 900; letter-spacing: 0.5px;
+  color: #1a1206; background: linear-gradient(180deg, #ffe9a8, #f5a623);
+  border: 2px solid #7d5a10; border-radius: 10px; cursor: pointer;
+  box-shadow: 0 4px 0 #7d5a10;
+}
+#end-turn:hover:not(:disabled) { filter: brightness(1.08); }
+#end-turn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 1px 0 #7d5a10; }
+#end-turn:disabled { filter: grayscale(0.7) brightness(0.6); cursor: not-allowed; }
+#mute-btn {
+  padding: 8px 10px; font-size: 13px; font-weight: 700; color: #f2ead8;
+  background: rgba(11, 14, 30, 0.7); border: 1px solid #4a4f7d; border-radius: 8px; cursor: pointer;
+}
+.keys-hint { font-size: 11px; color: #c9c2a8; line-height: 1.5; text-align: center; }
+
+/* ---- Angka melayang + kilat Resonansi ---- */
+#float-layer { position: absolute; inset: 0; pointer-events: none; z-index: 30; }
+.float-text {
+  position: absolute; transform: translate(-50%, -50%);
+  font-size: 34px; font-weight: 900; color: #fff;
+  text-shadow: 0 2px 0 #000, 0 0 18px rgba(255, 80, 50, 0.8);
+  animation: float-up 1.3s ease-out forwards;
+}
+.float-text.heal { color: #7ed491; text-shadow: 0 2px 0 #000, 0 0 18px rgba(80, 255, 130, 0.8); }
+.float-text.resonance { color: #ffd76d; font-size: 26px; text-shadow: 0 2px 0 #000, 0 0 18px rgba(255, 215, 109, 0.9); }
+.float-text.steal { color: #ffb13d; font-size: 24px; }
+@keyframes float-up {
+  0% { opacity: 0; margin-top: 14px; }
+  15% { opacity: 1; }
+  100% { opacity: 0; margin-top: -56px; }
+}
+#resonance-flash {
+  position: absolute; inset: 0; pointer-events: none; z-index: 25; opacity: 0;
+  background: radial-gradient(circle at 50% 60%, rgba(255, 215, 109, 0.45), transparent 65%);
+}
+#resonance-flash.go { animation: flash 0.7s ease-out; }
+@keyframes flash { 0% { opacity: 0; } 25% { opacity: 1; } 100% { opacity: 0; } }
+
+/* ---- Layar overlay: title / menang / kalah ---- */
+.screen {
+  position: absolute; inset: 0; z-index: 40;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 40px;
+}
+.screen.hidden { display: none; }
+#screen-title {
+  background:
+    radial-gradient(ellipse 800px 400px at 50% 30%, rgba(255, 122, 77, 0.22), transparent 60%),
+    radial-gradient(ellipse 700px 380px at 50% 110%, rgba(47, 174, 95, 0.25), transparent 60%),
+    rgba(8, 10, 24, 0.88);
+}
+.game-logo { font-size: 72px; font-weight: 900; letter-spacing: 2px; line-height: 0.95; color: #fff; text-shadow: 0 4px 0 #7d5a10, 0 10px 30px rgba(0, 0, 0, 0.7); }
+.game-logo .wind { color: #ffd76d; }
+.game-tagline { font-size: 19px; color: #e8dfc5; margin-top: 12px; font-style: italic; }
+.wind-row { display: flex; gap: 22px; margin: 26px 0 8px; }
+.wind-chip {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-size: 14px; font-weight: 800; color: #fff;
+}
+.wind-chip .chip-icon {
+  width: 56px; height: 56px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; color: #fff;
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.25);
+}
+.big-btn {
+  margin-top: 22px; padding: 16px 54px; font-size: 24px; font-weight: 900; letter-spacing: 1px;
+  color: #1a1206; background: linear-gradient(180deg, #ffe9a8, #f5a623);
+  border: 3px solid #7d5a10; border-radius: 14px; cursor: pointer;
+  box-shadow: 0 6px 0 #7d5a10, 0 12px 30px rgba(0, 0, 0, 0.5);
+}
+.big-btn:hover { filter: brightness(1.07); }
+.big-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #7d5a10; }
+.howto {
+  margin-top: 26px; max-width: 760px; text-align: left;
+  background: rgba(11, 14, 30, 0.75); border: 1px solid #4a4f7d; border-radius: 12px;
+  padding: 14px 18px; font-size: 14px; line-height: 1.55; color: #e8dfc5;
+}
+.howto b { color: #ffd76d; }
+.howto .wheel-line { margin-top: 8px; color: #fff; }
+.foe-intro { margin-top: 14px; font-size: 14px; color: #c9c2a8; }
+
+#screen-win {
+  background: radial-gradient(ellipse 900px 500px at 50% 40%, rgba(255, 215, 109, 0.35), transparent 65%), rgba(8, 10, 24, 0.9);
+}
+#screen-loss {
+  background: radial-gradient(ellipse 900px 500px at 50% 40%, rgba(226, 72, 58, 0.3), transparent 65%), rgba(8, 10, 24, 0.92);
+}
+.end-title { font-size: 64px; font-weight: 900; color: #fff; text-shadow: 0 4px 0 rgba(0, 0, 0, 0.4); }
+.end-title.gold { color: #ffd76d; text-shadow: 0 0 30px rgba(255, 215, 109, 0.7), 0 4px 0 #7d5a10; }
+.end-title.red { color: #ff8a7a; }
+.end-sub { font-size: 19px; color: #e8dfc5; margin-top: 10px; max-width: 640px; line-height: 1.5; }
+.stats-row { display: flex; gap: 16px; margin-top: 26px; }
+.stat {
+  background: rgba(11, 14, 30, 0.8); border: 1px solid #4a4f7d; border-radius: 12px;
+  padding: 14px 22px; display: flex; flex-direction: column; gap: 4px; min-width: 120px;
+}
+.stat b { font-size: 34px; color: #ffd76d; }
+.stat span { font-size: 13px; color: #c9c2a8; }
+
+/* Ember jatuh di layar menang. */
+.ember-rain { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ember-rain i {
+  position: absolute; top: -20px; width: 10px; height: 10px; border-radius: 50%;
+  background: #ffb13d; box-shadow: 0 0 12px #ff9a2e; animation: fall linear infinite;
+}
+.ember-rain i:nth-child(1) { left: 8%; animation-duration: 2.6s; animation-delay: 0s; }
+.ember-rain i:nth-child(2) { left: 18%; animation-duration: 3.1s; animation-delay: 0.4s; }
+.ember-rain i:nth-child(3) { left: 28%; animation-duration: 2.4s; animation-delay: 0.9s; }
+.ember-rain i:nth-child(4) { left: 38%; animation-duration: 3.4s; animation-delay: 0.2s; }
+.ember-rain i:nth-child(5) { left: 48%; animation-duration: 2.8s; animation-delay: 0.7s; }
+.ember-rain i:nth-child(6) { left: 58%; animation-duration: 3.0s; animation-delay: 0.1s; }
+.ember-rain i:nth-child(7) { left: 68%; animation-duration: 2.5s; animation-delay: 0.6s; }
+.ember-rain i:nth-child(8) { left: 78%; animation-duration: 3.3s; animation-delay: 0.3s; }
+.ember-rain i:nth-child(9) { left: 88%; animation-duration: 2.7s; animation-delay: 0.8s; }
+.ember-rain i:nth-child(10) { left: 95%; animation-duration: 3.2s; animation-delay: 0.5s; }
+@keyframes fall { to { transform: translateY(760px); } }
+
+#status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
